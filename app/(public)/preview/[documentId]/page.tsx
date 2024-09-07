@@ -1,16 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
-import dynamic from "next/dynamic";
-import { Cover } from "@/components/cover";
-import { Toolbar } from "@/components/toolbar";
-import { Skeleton } from "@/components/ui/skeleton";
-
-import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
+import dynamic from "next/dynamic";
+import { useMemo } from "react";
+
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { Toolbar } from "@/components/toolbar";
+import { Cover } from "@/components/cover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
 
 interface DocumentIdPageProps {
     params: {
@@ -36,6 +35,7 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
             id: params.documentId,
             content,
         });
+        router.refresh();
     };
 
     if (document === undefined) {
@@ -60,10 +60,14 @@ const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
 
     return (
         <div className="pb-60">
-            <Cover url={document.coverImage} />
+            <Cover preview url={document.coverImage} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-                <Toolbar initialData={document} />
-                <Editor onChange={onChange} initialContent={document.content} />
+                <Toolbar preview initialData={document} />
+                <Editor
+                    editable={false}
+                    onChange={onChange}
+                    initialContent={document.content}
+                />
             </div>
         </div>
     );
